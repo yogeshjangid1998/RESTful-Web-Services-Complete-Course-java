@@ -4,13 +4,13 @@ RESTful-Web-Services-Complete-Course-java
 Topic
 ##  RESTful Web Services - S1
 
-# 1.Designing RESTful Services
-	- REST and the Rebirth of HTTP
-	- RESTful Architectural Principles
-	- The Object Model
-	- Model the URIs
-	- Defining the Data Format
-	- Assigning HTTP Methods
+### 1.Designing RESTful Services
+	* REST and the Rebirth of HTTP
+	* RESTful Architectural Principles
+	* The Object Model
+	* Model the URIs
+	* Defining the Data Format
+	* Assigning HTTP Methods
 
 # 2.HTTP Method and URI Matching
 	- Developing a JAX-RS RESTful Service

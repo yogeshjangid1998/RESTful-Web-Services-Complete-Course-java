@@ -3,7 +3,8 @@ RESTful-Web-Services-Complete-Course-java
 
 Topic
 ##  RESTful Web Services - S1
-1.Designing RESTful Services
+
+# 1.Designing RESTful Services
 	- REST and the Rebirth of HTTP
 	- RESTful Architectural Principles
 	- The Object Model
@@ -11,13 +12,13 @@ Topic
 	- Defining the Data Format
 	- Assigning HTTP Methods
 
-2.HTTP Method and URI Matching
+# 2.HTTP Method and URI Matching
 	- Developing a JAX-RS RESTful Service
 	- Deploying RESTful Service
 	- Binding HTTP Methods
 	- Subresource Locators
 	
-3.JAX-RS Injection
+# 3.JAX-RS Injection
 	- @PathParam
 	- @MatrixParam
 	- @QueryParam
@@ -26,11 +27,11 @@ Topic
 	- @CookieParam
 	- Common Functionality
 	
-4.JAX-RS Content Handlers
+# 4.JAX-RS Content Handlers
 	- Built-in Content Marshalling - JAXB
 	- Custom Marshalling
 	
-5.Response Codes, Complex Responses, and Exception Handling
+# 5.Response Codes, Complex Responses, and Exception Handling
 	- Default Response Codes
 	- Complex Responses
 	- Exception Handling

@@ -188,9 +188,7 @@ RESTful architectural principles, as defined by Roy Fielding in his doctoral dis
 By adhering to these RESTful principles, developers can create web services that are scalable, reliable, and easy to maintain. These principles ensure a clear separation of concerns, enable independent evolution of client and server, and promote a uniform and stateless interaction model, which are essential for the robust functioning of web services in a distributed environment.
 
 
-Here's the content formatted as a `README.md` file:
 
-```markdown
 # Object Model in RESTful Web Services
 
 In RESTful web services, the object model refers to how resources are represented and structured within an application. Typically, resources are modeled as Java objects, and these objects are then mapped to JSON or XML representations for communication over HTTP.

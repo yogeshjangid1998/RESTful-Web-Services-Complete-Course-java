@@ -371,7 +371,6 @@ The object model in RESTful web services revolves around resources, which are ty
 
 
 
-```markdown
 # Data Formats in RESTful Web Services
 
 In RESTful web services, defining the data format is crucial for consistent and efficient communication between the client and server. Typically, JSON (JavaScript Object Notation) and XML (eXtensible Markup Language) are used as data formats. JSON is preferred due to its simplicity and ease of use, especially in web applications.

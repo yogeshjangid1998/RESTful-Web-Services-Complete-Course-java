@@ -2205,3 +2205,562 @@ curl -X POST http://localhost:8080/api/books -H "Content-Type: application/xml" 
 
 JAX-RS leverages JAXB to provide built-in content marshalling and unmarshalling for XML data. By using JAXB annotations, you can easily map Java objects to XML representations and vice versa, allowing for seamless integration of XML content handling in your RESTful web services. This built-in support simplifies the development of APIs that need to process XML data, making JAX-RS a powerful tool for building robust RESTful applications.
 
+
+#   In JAX-RS, custom marshalling
+In JAX-RS, custom marshalling refers to creating your own mechanisms for converting Java objects to/from HTTP request and response bodies when the built-in marshalling mechanisms (like JAXB for XML or Jackson for JSON) do not meet your requirements. This can be achieved by implementing custom `MessageBodyReader` and `MessageBodyWriter` classes.
+
+### Implementing Custom Marshalling
+
+To implement custom marshalling in JAX-RS, follow these steps:
+
+1. **Create a Custom Data Type**: Define the Java class that represents the custom data you want to marshal and unmarshal.
+2. **Implement `MessageBodyReader`**: Create a class that implements the `MessageBodyReader<T>` interface for unmarshalling.
+3. **Implement `MessageBodyWriter`**: Create a class that implements the `MessageBodyWriter<T>` interface for marshalling.
+4. **Register the Custom Providers**: Register these providers with your JAX-RS application.
+
+### Step-by-Step Example
+
+#### Step 1: Create a Custom Data Type
+
+```java
+public class CustomData {
+    private String name;
+    private int value;
+
+    // Getters and setters
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getValue() {
+        return value;
+    }
+
+    public void setValue(int value) {
+        this.value = value;
+    }
+}
+```
+
+#### Step 2: Implement `MessageBodyReader`
+
+```java
+import javax.ws.rs.Consumes;
+import javax.ws.rs.ext.Provider;
+import javax.ws.rs.ext.MessageBodyReader;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedMap;
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
+import java.nio.charset.StandardCharsets;
+import java.util.Scanner;
+
+@Provider
+@Consumes("application/custom")
+public class CustomDataReader implements MessageBodyReader<CustomData> {
+
+    @Override
+    public boolean isReadable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
+        return type == CustomData.class;
+    }
+
+    @Override
+    public CustomData readFrom(Class<CustomData> type, Type genericType, Annotation[] annotations, MediaType mediaType,
+                               MultivaluedMap<String, String> httpHeaders, InputStream entityStream) throws IOException {
+        try (Scanner scanner = new Scanner(entityStream, StandardCharsets.UTF_8.name())) {
+            String content = scanner.useDelimiter("\\A").next();
+            String[] parts = content.split(",");
+            CustomData data = new CustomData();
+            data.setName(parts[0]);
+            data.setValue(Integer.parseInt(parts[1]));
+            return data;
+        }
+    }
+}
+```
+
+#### Step 3: Implement `MessageBodyWriter`
+
+```java
+import javax.ws.rs.Produces;
+import javax.ws.rs.ext.Provider;
+import javax.ws.rs.ext.MessageBodyWriter;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedMap;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
+import java.nio.charset.StandardCharsets;
+
+@Provider
+@Produces("application/custom")
+public class CustomDataWriter implements MessageBodyWriter<CustomData> {
+
+    @Override
+    public boolean isWriteable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
+        return type == CustomData.class;
+    }
+
+    @Override
+    public void writeTo(CustomData data, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType,
+                        MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream) throws IOException {
+        try (Writer writer = new OutputStreamWriter(entityStream, StandardCharsets.UTF_8)) {
+            writer.write(data.getName() + "," + data.getValue());
+        }
+    }
+}
+```
+
+#### Step 4: Register the Custom Providers
+
+Depending on your JAX-RS setup, you might need to register the custom providers manually. If you are using a `javax.ws.rs.core.Application` subclass, you can register the providers there:
+
+```java
+import javax.ws.rs.ApplicationPath;
+import javax.ws.rs.core.Application;
+import java.util.HashSet;
+import java.util.Set;
+
+@ApplicationPath("/api")
+public class CustomApplication extends Application {
+    @Override
+    public Set<Class<?>> getClasses() {
+        Set<Class<?>> classes = new HashSet<>();
+        classes.add(CustomDataReader.class);
+        classes.add(CustomDataWriter.class);
+        classes.add(CustomResource.class);  // Your JAX-RS resource class
+        return classes;
+    }
+}
+```
+
+#### Step 5: Create a Resource Class to Use the Custom Marshalling
+
+```java
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+
+@Path("/custom")
+public class CustomResource {
+
+    @POST
+    @Consumes("application/custom")
+    @Produces("application/custom")
+    public Response postCustomData(CustomData data) {
+        // Process the custom data
+        return Response.ok(data).build();
+    }
+
+    @GET
+    @Produces("application/custom")
+    public Response getCustomData() {
+        CustomData data = new CustomData();
+        data.setName("Example");
+        data.setValue(123);
+        return Response.ok(data).build();
+    }
+}
+```
+
+### Testing the Endpoint
+
+To test the custom content handlers using curl:
+
+```sh
+# POST request with custom content type
+curl -X POST http://localhost:8080/api/custom -H "Content-Type: application/custom" -d "Test,42"
+
+# GET request to retrieve custom content type
+curl -X GET http://localhost:8080/api/custom -H "Accept: application/custom"
+```
+
+### Conclusion
+
+Custom marshalling in JAX-RS allows you to handle specific content types that are not covered by the built-in marshallers. By implementing `MessageBodyReader` and `MessageBodyWriter`, you can define how to serialize and deserialize your custom data types, enabling flexible and extensible handling of different content types in your RESTful services. This approach is crucial when dealing with proprietary data formats or optimizing data transmission for specific use cases.
+
+
+
+
+#   Response Codes, Complex Responses, and Exception Handling
+===========================================================
+##  Default Response Codes
+### Overview
+In JAX-RS, response codes are crucial for conveying the outcome of HTTP requests. Understanding how to handle response codes, complex responses, and exceptions is essential for building robust and reliable RESTful APIs.
+
+### Default Response Codes in JAX-RS
+
+By default, JAX-RS provides a set of response codes that map to common HTTP status codes. These status codes convey the success, failure, or other states of the HTTP request-response cycle.
+
+#### Commonly Used Response Codes
+
+- **200 OK**: The request has succeeded.
+- **201 Created**: The request has been fulfilled and resulted in a new resource being created.
+- **204 No Content**: The server successfully processed the request, but there is no content to return.
+- **400 Bad Request**: The server cannot or will not process the request due to an apparent client error (e.g., malformed request syntax, invalid parameters).
+- **401 Unauthorized**: The request requires user authentication.
+- **403 Forbidden**: The server understood the request but refuses to authorize it.
+- **404 Not Found**: The server cannot find the requested resource.
+- **500 Internal Server Error**: A generic error message indicating that the server encountered an unexpected condition that prevented it from fulfilling the request.
+
+### Handling Complex Responses
+
+JAX-RS allows you to return complex responses using Java objects, which are automatically marshalled into the appropriate content type (JSON, XML, etc.) based on the `@Produces` annotation.
+
+#### Example
+
+```java
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+
+@Path("/books")
+@Produces(MediaType.APPLICATION_JSON)
+public class BookResource {
+
+    @GET
+    @Path("/{id}")
+    public Response getBook(@PathParam("id") int id) {
+        Book book = findBookById(id);
+        if (book != null) {
+            return Response.ok(book).build();
+        } else {
+            return Response.status(Response.Status.NOT_FOUND).entity("Book not found for id: " + id).build();
+        }
+    }
+
+    private Book findBookById(int id) {
+        // Implementation to find a book by id
+        return null; // Simulated not found scenario
+    }
+}
+```
+
+### Exception Handling
+
+Exception handling in JAX-RS allows you to customize how exceptions thrown during request processing are converted into appropriate HTTP responses. This is typically done using exception mappers.
+
+#### Example: Exception Mapper
+
+```java
+import javax.ws.rs.core.Response;
+import javax.ws.rs.ext.ExceptionMapper;
+import javax.ws.rs.ext.Provider;
+
+@Provider
+public class CustomExceptionMapper implements ExceptionMapper<CustomException> {
+
+    @Override
+    public Response toResponse(CustomException ex) {
+        return Response.status(ex.getStatus())
+                       .entity(new ErrorResponse(ex.getMessage(), ex.getStatus()))
+                       .build();
+    }
+}
+```
+
+#### Custom Exception Class
+
+```java
+public class CustomException extends RuntimeException {
+    private int status;
+
+    public CustomException(String message, int status) {
+        super(message);
+        this.status = status;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+}
+```
+
+#### Using Custom Exception in Resource Class
+
+```java
+@Path("/books")
+@Produces(MediaType.APPLICATION_JSON)
+public class BookResource {
+
+    @GET
+    @Path("/{id}")
+    public Response getBook(@PathParam("id") int id) {
+        Book book = findBookById(id);
+        if (book != null) {
+            return Response.ok(book).build();
+        } else {
+            throw new CustomException("Book not found for id: " + id, Response.Status.NOT_FOUND.getStatusCode());
+        }
+    }
+
+    private Book findBookById(int id) {
+        // Implementation to find a book by id
+        return null; // Simulated not found scenario
+    }
+}
+```
+
+### Conclusion
+
+Understanding and effectively using response codes, handling complex responses, and managing exceptions are fundamental aspects of developing RESTful APIs with JAX-RS. By leveraging default response codes, returning complex responses, and customizing exception handling through exception mappers, you can create APIs that provide clear and informative feedback to clients while ensuring robust error management and user experience.
+
+#   Complex Responses
+In the context of JAX-RS (Java API for RESTful Web Services), handling complex responses refers to returning structured data beyond simple strings or numbers. Complex responses typically involve returning Java objects serialized into JSON, XML, or other formats supported by JAX-RS providers.
+
+### Handling Complex Responses in JAX-RS
+
+To handle complex responses effectively, follow these steps:
+
+1. **Define Java Classes**: Define Java classes that represent the data structures you want to return.
+   
+2. **Use `@Produces` Annotation**: Annotate your resource methods with `@Produces` to specify the media type(s) of the response.
+
+3. **Return Java Objects**: Return Java objects from your resource methods, and let JAX-RS handle the serialization to the appropriate format based on the `@Produces` annotation.
+
+### Example
+
+Let's create a simple example to illustrate handling complex responses in JAX-RS using JSON serialization.
+
+#### Step 1: Define Java Classes
+
+```java
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement
+public class Book {
+    private String title;
+    private String author;
+    private int year;
+
+    // Getters and setters (for JAXB or JSON serialization frameworks like Jackson)
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+
+    public int getYear() {
+        return year;
+    }
+
+    public void setYear(int year) {
+        this.year = year;
+    }
+}
+```
+
+#### Step 2: Create a JAX-RS Resource Class
+
+```java
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+
+@Path("/books")
+@Produces(MediaType.APPLICATION_JSON)
+public class BookResource {
+
+    @GET
+    @Path("/{id}")
+    public Response getBook(@PathParam("id") int id) {
+        // Simulate finding a book based on the id
+        Book book = findBookById(id);
+        if (book != null) {
+            return Response.ok(book).build();
+        } else {
+            return Response.status(Response.Status.NOT_FOUND)
+                           .entity("Book not found for id: " + id)
+                           .build();
+        }
+    }
+
+    private Book findBookById(int id) {
+        // Simulated database lookup or service call to find a book
+        if (id == 1) {
+            return new Book("Effective Java", "Joshua Bloch", 2008);
+        } else if (id == 2) {
+            return new Book("Clean Code", "Robert C. Martin", 2008);
+        } else {
+            return null; // Simulate book not found
+        }
+    }
+}
+```
+
+#### Explanation
+
+- **`@Path("/books")`**: Specifies the base URI path for the `BookResource` class.
+- **`@Produces(MediaType.APPLICATION_JSON)`**: Indicates that this resource produces JSON responses.
+- **`@GET @Path("/{id}")`**: Handles HTTP GET requests for retrieving a book by its `id`.
+- **`Response.ok(book).build()`**: Returns a response with status 200 (OK) and the serialized `Book` object as JSON.
+- **`Response.status(Response.Status.NOT_FOUND).entity("Book not found for id: " + id).build()`**: Returns a response with status 404 (Not Found) if the book with the specified `id` is not found.
+
+### Testing the Endpoint
+
+To test the endpoint using curl or a similar tool:
+
+```sh
+# GET request to fetch a book by ID
+curl -X GET http://localhost:8080/api/books/1 -H "Accept: application/json"
+```
+
+### Considerations
+
+- Ensure the Java classes (`Book` in this case) are properly annotated for serialization/deserialization, especially if using JAXB or JSON providers like Jackson.
+- Use appropriate HTTP status codes (`200 OK`, `404 Not Found`, etc.) to indicate the outcome of the request.
+- Handle edge cases such as empty or invalid responses gracefully.
+
+### Conclusion
+
+Handling complex responses in JAX-RS involves returning Java objects that are serialized into JSON, XML, or other formats. By defining resource methods that return complex data structures and annotating them correctly, you can build RESTful APIs that efficiently communicate structured data to clients. This approach ensures flexibility and readability in API responses, enhancing the overall usability and functionality of your web services.
+
+
+#   Exception Handling
+##   Overview
+Exception handling in JAX-RS involves managing errors and exceptions that occur during the processing of RESTful requests. Handling exceptions effectively ensures that your API responds appropriately to client requests, providing informative error messages and correct HTTP status codes.
+
+### Exception Handling Approaches in JAX-RS
+
+There are two primary approaches to handling exceptions in JAX-RS:
+
+1. **Exception Mapping (Exception Mappers)**:
+   - Use `ExceptionMapper` implementations to map specific exceptions to appropriate HTTP responses.
+
+2. **Global Exception Handling**:
+   - Implement a global exception handler to catch unhandled exceptions and provide a consistent error response.
+
+### Example: Exception Mapping (Exception Mappers)
+
+Exception mappers in JAX-RS allow you to map specific exceptions to HTTP responses. Here’s how you can create and use an exception mapper:
+
+#### Step 1: Create a Custom Exception Class
+
+```java
+public class CustomException extends RuntimeException {
+
+    private int status;
+
+    public CustomException(String message, int status) {
+        super(message);
+        this.status = status;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+}
+```
+
+#### Step 2: Implement an Exception Mapper
+
+```java
+import javax.ws.rs.core.Response;
+import javax.ws.rs.ext.ExceptionMapper;
+import javax.ws.rs.ext.Provider;
+
+@Provider
+public class CustomExceptionMapper implements ExceptionMapper<CustomException> {
+
+    @Override
+    public Response toResponse(CustomException exception) {
+        return Response.status(exception.getStatus())
+                       .entity(exception.getMessage())
+                       .build();
+    }
+}
+```
+
+#### Step 3: Use the Custom Exception in a Resource Class
+
+```java
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+
+@Path("/example")
+@Produces(MediaType.APPLICATION_JSON)
+public class ExampleResource {
+
+    @GET
+    public Response exampleEndpoint() {
+        try {
+            // Simulate an exception
+            throw new CustomException("Simulated error occurred", Response.Status.BAD_REQUEST.getStatusCode());
+        } catch (CustomException e) {
+            // Exception will be handled by CustomExceptionMapper
+            throw e;
+        } catch (Exception e) {
+            // Other exceptions not handled by a specific mapper
+            throw new InternalServerErrorException("Internal server error occurred", e);
+        }
+    }
+}
+```
+
+### Global Exception Handling
+
+Global exception handling involves catching unhandled exceptions across all resources and providing a consistent error response. This approach can be implemented by creating a custom `ExceptionMapper` for general `Throwable` exceptions or by using filters/interceptors.
+
+#### Example: Global Exception Mapper
+
+```java
+import javax.ws.rs.core.Response;
+import javax.ws.rs.ext.ExceptionMapper;
+import javax.ws.rs.ext.Provider;
+
+@Provider
+public class GlobalExceptionMapper implements ExceptionMapper<Throwable> {
+
+    @Override
+    public Response toResponse(Throwable exception) {
+        int status = Response.Status.INTERNAL_SERVER_ERROR.getStatusCode();
+        String message = "Internal server error occurred";
+        return Response.status(status)
+                       .entity(message)
+                       .build();
+    }
+}
+```
+
+### Testing Exception Handling
+
+To test exception handling, invoke the endpoint using curl or a similar tool and observe the returned HTTP status codes and messages.
+
+```sh
+# Example GET request to trigger an exception
+curl -X GET http://localhost:8080/api/example
+```
+
+### Considerations
+
+- Use appropriate HTTP status codes (`4xx` for client errors, `5xx` for server errors) to indicate the nature of the problem.
+- Provide meaningful error messages that help clients understand the issue.
+- Ensure exception mappers are registered properly in your JAX-RS application configuration.
+
+### Conclusion
+
+Exception handling in JAX-RS is crucial for building robust and reliable RESTful APIs. By using exception mappers or global exception handling techniques, you can manage errors effectively and provide clear, consistent responses to clients, improving the overall usability and reliability of your API.
+
+
+
+******************** RESTful Web Services - S2 **********************

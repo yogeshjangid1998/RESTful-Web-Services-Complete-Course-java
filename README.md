@@ -2,10 +2,10 @@
 RESTful-Web-Services-Complete-Course-java
 # Topic
 
-# RESTful Web Services - S1
+# [RESTful Web Services - S1](#rest-(representational-state-transfer))
 
 ## 1. Designing RESTful Services
-- REST and the Rebirth of HTTP
+- [REST and the Rebirth of HTTP](#rest-is-an-architectural-style-for-designing)
 - RESTful Architectural Principles
 - The Object Model
 - Model the URIs
@@ -76,7 +76,7 @@ RESTful-Web-Services-Complete-Course-java
 - JBoss RESTEasy
 
 
-### REST (Representational State Transfer)
+### <a id="rest-(representational-state-transfer)">REST (Representational State Transfer)</a>
 
 **REST** is an architectural style for designing networked applications. It relies on a stateless, client-server, cacheable communications protocol -- the HTTP protocol is commonly used for this purpose. RESTful applications use HTTP requests to perform CRUD (Create/Read/Update/Delete) operations on resources, which can be identified using URLs. Here are the key principles of REST:
 

@@ -4,13 +4,13 @@ RESTful-Web-Services-Complete-Course-java
 
 # RESTful Web Services - S1
 
-## 1. Designing RESTful Services
-- REST and the Rebirth of HTTP
-- RESTful Architectural Principles
-- The Object Model
-- Model the URIs
-- Defining the Data Format
-- Assigning HTTP Methods
+## [1. Designing RESTful Services](#rest-representational-state-transfer)
+- [REST and the Rebirth of HTTP](#rest-is-an-architectural-style-for-designing)
+- [RESTful Architectural Principles](#restful-architectural-principles)
+- [The Object Model](#the-object-model)
+- [Model the URIs](#model-the-uris)
+- [Defining the Data Format](#defining-data-formats)
+- [Assigning HTTP Methods](#assigning-http-methods)
 
 ## 2. HTTP Method and URI Matching
 - Developing a JAX-RS RESTful Service
@@ -76,7 +76,7 @@ RESTful-Web-Services-Complete-Course-java
 - JBoss RESTEasy
 
 
-### REST (Representational State Transfer)
+### <a id="rest-representational-state-transfer">REST (Representational State Transfer)</a>
 
 **REST** is an architectural style for designing networked applications. It relies on a stateless, client-server, cacheable communications protocol -- the HTTP protocol is commonly used for this purpose. RESTful applications use HTTP requests to perform CRUD (Create/Read/Update/Delete) operations on resources, which can be identified using URLs. Here are the key principles of REST:
 
@@ -92,7 +92,7 @@ RESTful-Web-Services-Complete-Course-java
 5. **Layered System**: The architecture can be composed of multiple layers (e.g., security, load-balancing) without the client being aware of these layers.
 6. **Code on Demand (optional)**: Servers can extend client functionality by transferring executable code (like JavaScript).
 
-### The Rebirth of HTTP in Java
+### <a id ="rest-is-an-architectural-style-for-designing"> The Rebirth of HTTP in Java </a>
 
 The "Rebirth of HTTP" in Java often refers to the adoption and enhancement of RESTful services in Java applications. The following aspects highlight this evolution:
 
@@ -127,7 +127,7 @@ The adoption and enhancement of REST in Java have marked a significant shift tow
 
 
 
-# RESTful Architectural Principles
+# <a id = "restful-architectural-principles">RESTful Architectural Principles</a>
 
 RESTful architectural principles, as defined by Roy Fielding in his doctoral dissertation, are the core guidelines for designing RESTful systems. These principles ensure that web services are scalable, performant, and maintainable. Here’s a detailed overview of each principle:
 
@@ -189,7 +189,7 @@ By adhering to these RESTful principles, developers can create web services that
 
 
 
-# Object Model in RESTful Web Services
+# <a id = "the-object-model">Object Model in RESTful Web Services</a>
 
 In RESTful web services, the object model refers to how resources are represented and structured within an application. Typically, resources are modeled as Java objects, and these objects are then mapped to JSON or XML representations for communication over HTTP.
 
@@ -282,7 +282,7 @@ public class BookController {
 }
 ```
 
-### Example HTTP Requests and Responses
+### <a id="model-the-uris">Example HTTP Requests and Responses</a>
 
 #### GET /api/books
 Retrieve all books.
@@ -371,7 +371,7 @@ The object model in RESTful web services revolves around resources, which are ty
 
 
 
-# Data Formats in RESTful Web Services
+# <a id="defining-data-formats">Data Formats in RESTful Web Services</a>
 
 In RESTful web services, defining the data format is crucial for consistent and efficient communication between the client and server. Typically, JSON (JavaScript Object Notation) and XML (eXtensible Markup Language) are used as data formats. JSON is preferred due to its simplicity and ease of use, especially in web applications.
 
@@ -538,7 +538,7 @@ Defining the data format is a critical aspect of designing RESTful web services.
 
 
 
-# HTTP Methods in RESTful Web Services
+# <a id="assigning-http-methods">HTTP Methods in RESTful Web Services</a>
 
 Assigning HTTP methods to various actions in a RESTful web service is a key part of adhering to REST principles. The primary HTTP methods used in REST are GET, POST, PUT, DELETE, and PATCH, each serving a specific purpose in manipulating resources.
 

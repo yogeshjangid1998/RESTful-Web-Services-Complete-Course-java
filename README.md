@@ -128,6 +128,11 @@ The adoption and enhancement of REST in Java have marked a significant shift tow
 
 
 # <a id = "restful-architectural-principles">RESTful Architectural Principles</a>
+** Interview Defination:-** A REST API (Representational State Transfer API) is a way for different software applications to communicate with each other over the internet using standard HTTP methods. It allows you to perform operations like retrieving, creating, updating, and deleting data.
+**Key Components of a REST API:**
+	**Endpoint:** A URL that represents a resource (e.g., /books, /users).
+	**HTTP Methods:** Standard methods like GET, POST, PUT, DELETE used to perform actions on the resources.
+	**Request and Response:** Data is sent to and received from the server in a structured format, usually JSON or XML.
 
 RESTful architectural principles, as defined by Roy Fielding in his doctoral dissertation, are the core guidelines for designing RESTful systems. These principles ensure that web services are scalable, performant, and maintainable. Here’s a detailed overview of each principle:
 
@@ -190,12 +195,6 @@ By adhering to these RESTful principles, developers can create web services that
 
 
 # <a id = "the-object-model">Object Model in RESTful Web Services</a>
-## Interview Defination:- A REST API (Representational State Transfer API) is a way for different software applications to communicate with each other over the internet using standard HTTP methods. It allows you to perform operations like retrieving, creating, updating, and deleting data.
-## Key Components of a REST API:
-	**Endpoint:** A URL that represents a resource (e.g., /books, /users).
-	**HTTP Methods:** Standard methods like GET, POST, PUT, DELETE used to perform actions on the resources.
-	**Request and Response:** Data is sent to and received from the server in a structured format, usually JSON or XML.
-
 In RESTful web services, the object model refers to how resources are represented and structured within an application. Typically, resources are modeled as Java objects, and these objects are then mapped to JSON or XML representations for communication over HTTP.
 
 ## Key Concepts of Object Model in RESTful Web Services

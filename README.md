@@ -78,7 +78,7 @@ RESTful-Web-Services-Complete-Course-java
 
 ### <a id="rest-representational-state-transfer">REST (Representational State Transfer)</a>
 ### Interview Defination:- A REST API (Representational State Transfer API) is a way for different software applications to communicate with each other over the internet using standard HTTP methods. It allows you to perform operations like retrieving, creating, updating, and deleting data.
-###Key Components of a REST API:
+## Key Components of a REST API:
 	**Endpoint:** A URL that represents a resource (e.g., /books, /users).
 	**HTTP Methods:** Standard methods like GET, POST, PUT, DELETE used to perform actions on the resources.
 	**Request and Response:** Data is sent to and received from the server in a structured format, usually JSON or XML.

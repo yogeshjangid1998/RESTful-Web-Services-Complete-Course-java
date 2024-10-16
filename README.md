@@ -77,6 +77,12 @@ RESTful-Web-Services-Complete-Course-java
 
 
 ### <a id="rest-representational-state-transfer">REST (Representational State Transfer)</a>
+### Interview Defination:- A REST API (Representational State Transfer API) is a way for different software applications to communicate with each other over the internet using standard HTTP methods. It allows you to perform operations like retrieving, creating, updating, and deleting data.
+###Key Components of a REST API:
+	**Endpoint:** A URL that represents a resource (e.g., /books, /users).
+	**HTTP Methods:** Standard methods like GET, POST, PUT, DELETE used to perform actions on the resources.
+	**Request and Response:** Data is sent to and received from the server in a structured format, usually JSON or XML.
+
 
 **REST** is an architectural style for designing networked applications. It relies on a stateless, client-server, cacheable communications protocol -- the HTTP protocol is commonly used for this purpose. RESTful applications use HTTP requests to perform CRUD (Create/Read/Update/Delete) operations on resources, which can be identified using URLs. Here are the key principles of REST:
 
@@ -128,11 +134,6 @@ The adoption and enhancement of REST in Java have marked a significant shift tow
 
 
 # <a id = "restful-architectural-principles">RESTful Architectural Principles</a>
-** Interview Defination:-** A REST API (Representational State Transfer API) is a way for different software applications to communicate with each other over the internet using standard HTTP methods. It allows you to perform operations like retrieving, creating, updating, and deleting data.
-**Key Components of a REST API:**
-	**Endpoint:** A URL that represents a resource (e.g., /books, /users).
-	**HTTP Methods:** Standard methods like GET, POST, PUT, DELETE used to perform actions on the resources.
-	**Request and Response:** Data is sent to and received from the server in a structured format, usually JSON or XML.
 
 RESTful architectural principles, as defined by Roy Fielding in his doctoral dissertation, are the core guidelines for designing RESTful systems. These principles ensure that web services are scalable, performant, and maintainable. Here’s a detailed overview of each principle:
 
